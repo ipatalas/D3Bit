@@ -30,12 +30,11 @@ namespace D3Bit
             Process p = Process.Start(info);
             p.WaitForExit();
             //sw.Lap("Tesseract");
-            TextReader tr = new StreamReader(@"tesseract\x.txt");
-            string res = tr.ReadToEnd();
-            tr.Close();
-            //File.Delete(@"tesseract\x.png");
-            //File.Delete(@"tesseract\x.txt");
-            return res.Trim();
+
+			using (var tr = new StreamReader(@"tesseract\x.txt"))
+			{
+				return tr.ReadToEnd().Trim();
+			}
         }
 
         public static string CorrectSpelling(string text)

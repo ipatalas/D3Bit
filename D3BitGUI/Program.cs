@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using D3Bit;
 
 namespace D3BitGUI
 {
@@ -21,7 +17,5 @@ namespace D3BitGUI
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new GUI());
         }
-
-        
     }
 }

@@ -56,7 +56,7 @@ namespace D3BitGUI
                     throw new Exception("No builds");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 GUI.Log("Cannot fetch default build. Please check your d3up username.");
             }

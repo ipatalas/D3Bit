@@ -6,11 +6,15 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.IO;
 
 namespace D3Bit
 {
     public static class Screenshot
     {
+		private const string UpperCornerName = "ucorner.png";
+		private const string BottomCornerName = "bcorner.png";
+
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         [DllImport("user32.dll")]
@@ -169,6 +173,7 @@ namespace D3Bit
         {
             var lines = ImageUtil.FindHorizontalLines(bitmap, 260, 650, new int[] { 0, 10, 0, 10, 0, 10 });
             lines = lines.OrderBy(l => l.P1.X).ToList();
+
             var groups =
                 lines.GroupBy(l => l.P1.X).Where(
                     l =>
@@ -206,5 +211,46 @@ namespace D3Bit
             }
             return null;
         }
+
+		public static Bitmap GetTooltip_ImageSearch(Bitmap source)
+		{
+			var path = string.Format(@"pics\{0}x{1}\", source.Width, source.Height);
+			if (!Directory.Exists(path))
+			{ 
+				// fallback to slower mechanism
+				return GetToolTip(source);
+			}
+
+			var findImg = "*TRANSBLACK *15 " + path;
+
+			var result = ImageUtil.ImageSearch(0, 0, source.Width, (int)(source.Height * 0.7), findImg + UpperCornerName);
+			if (result == "0")
+			{
+				Trace.TraceWarning("Upper-left corner not found...");
+				return null;
+			}
+
+			var start = ImageSearchResultToRectangle(result);
+
+			result = ImageUtil.ImageSearch(start.Left, start.Top, start.Left + 510, source.Height, findImg + BottomCornerName);
+			if (result == "0")
+			{
+				Trace.TraceWarning("Bottom-right corner not found...");
+				return null;
+			}
+
+			var end = ImageSearchResultToRectangle(result);
+
+			var bounds = Rectangle.FromLTRB(start.Left, start.Top, end.Right, end.Bottom);
+
+			return source.Clone(bounds, source.PixelFormat);
+		}
+
+		static Rectangle ImageSearchResultToRectangle(string result)
+		{
+			var split = result.Split('|').ToList().ConvertAll(x => int.Parse(x));
+
+			return new Rectangle(split[1], split[2], split[3], split[4]);
+		}
     }
 }

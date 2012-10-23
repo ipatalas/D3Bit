@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace D3Bit
 {
@@ -135,7 +136,7 @@ namespace D3Bit
             //dpsBlock = ImageUtil.ImproveForOCR(dpsBlock);
             //dpsBlock = ImageUtil.DpsFix(dpsBlock);
             string text = Tesseract.GetTextFromBitmap(dpsBlock, @"-psm 7 nobatch tesseract\d3digits");
-            double.TryParse(text, out dps);
+            double.TryParse(text, System.Globalization.NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dps);
             return dps;
         }
 

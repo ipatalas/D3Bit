@@ -16,22 +16,16 @@ using D3Bit;
 using Gma.UserActivityMonitor;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
-using Point = D3Bit.Point;
 
 namespace D3BitGUI
 {
     public partial class GUI : Form
     {
         private static string version = "1.1.7";
-#if DEBUG
-        private static bool debugMode = true;
-#else
-        private static bool debugMode = false;
-#endif
+
         private static string debugStr = "";
         private static bool needToUpdateDebugStr = false;
         private Thread t;
-        private OverlayForm _overlay;
 
         public GUI()
         {
@@ -144,9 +138,9 @@ namespace D3BitGUI
             needToUpdateDebugStr = true;
         }
 
+		[Conditional("DEBUG")]
         public static void Debug(string text, params object[] objs)
         {
-            if (debugMode)
                 Log(text, objs);
         }
 
@@ -178,17 +172,14 @@ namespace D3BitGUI
         private void GUI_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (t != null && t.ThreadState == System.Threading.ThreadState.Running)
+			{
                 t.Abort();
+        }
         }
 
         private void rtbDebug_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             Process.Start(e.LinkText);
-        }
-
-        private void ucOptions1_Load(object sender, EventArgs e)
-        {
-
         }
 
         private void GUI_Resize(object sender, EventArgs e)
@@ -212,11 +203,6 @@ namespace D3BitGUI
             this.WindowState = FormWindowState.Normal;
         }
 
-        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
-        {
-
-        }
-
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             notifyIcon1.Visible = false;
@@ -228,8 +214,5 @@ namespace D3BitGUI
         {
             Close();
         }
-
-        
-
     }
 }

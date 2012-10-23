@@ -135,7 +135,6 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(104, 48);
             this.contextMenuStrip1.Text = "Show";
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // toolStripMenuItem1
             // 
@@ -157,7 +156,6 @@
             this.ucOptions1.Name = "ucOptions1";
             this.ucOptions1.Size = new System.Drawing.Size(190, 132);
             this.ucOptions1.TabIndex = 0;
-            this.ucOptions1.Load += new System.EventHandler(this.ucOptions1_Load);
             // 
             // ucBatch1
             // 

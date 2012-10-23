@@ -5,7 +5,7 @@ using System.Text;
 
 namespace D3Bit
 {
-    public static class Extensions
+    public static class D3BitExtensions
     {
         /// <summary>
         /// Dice Coefficient based on bigrams. <br />
@@ -48,7 +48,7 @@ namespace D3Bit
             return ToNGrams(input, 2);
         }
 
-        public static string[] ToTriGrams(this string input)
+        private static string[] ToTriGrams(this string input)
         {
             // nLength == 3
             //   from Jackson, return %%j %ja jac ack cks kso son on# n##

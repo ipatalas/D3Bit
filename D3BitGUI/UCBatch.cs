@@ -65,7 +65,7 @@ namespace D3BitGUI
                         data.Add(itemDic);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }

@@ -69,3 +69,7 @@ packages/
 
 #Test files
 *.testsettings
+/!Data/Tooltips/tmp_v2/*.bmp
+/!Data/Tooltips/tmp/*.bmp
+/!Data/Tooltips/images/*.jpg
+/!Data/Tooltips/*.zip

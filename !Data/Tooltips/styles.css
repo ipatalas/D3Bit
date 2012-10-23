@@ -1,0 +1,50 @@
+td
+{
+	vertical-align: top;
+}
+
+td.tooltip {
+    /*border-right: 2px solid black;*/
+    padding-bottom: 0,1em;
+    text-align: right;
+}
+
+td.tt1, td.tooltip {
+	padding-right: 5px;
+}
+
+td.original {
+    border-right: 2px solid black;
+}
+
+tr.different td.original, tr.different td.improved {
+	background: #ffe1e1;
+}
+
+.performance
+{
+	color: red;
+	font-family: Verdana;
+	font-size: 24pt;
+}
+
+/*.improved .performance {
+	color: lime;
+}*/
+
+
+.tooltip div {
+    position: relative;
+}
+
+.tooltip span {
+    color: lime;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+pre {
+    font-size: 16px;
+    padding-left: 1em;
+}
