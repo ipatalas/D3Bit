@@ -16,6 +16,10 @@ using System.Drawing.Imaging;
 using Tests.Extensions;
 using System.Web.UI;
 using System.Text.RegularExpressions;
+using AForge.Imaging.Filters;
+using AForge;
+using AForge.Imaging;
+using Tests;
 
 namespace Tests
 {
@@ -24,12 +28,52 @@ namespace Tests
 		[STAThread]
 		static void Main(string[] args)
 		{
-			ExtractTooltips();
-			return;
+			//ExtractTooltips();
+			//TestLevels();
+			//return;
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new frmMain());
+		}
+
+		static void TestLevels()
+		{
+			var bmp1 = (Bitmap)Bitmap.FromFile("meta1.png");
+			var bmp2 = (Bitmap)Bitmap.FromFile("meta2.png");
+
+			LevelsLinear filter = new LevelsLinear();
+			// set ranges
+			filter.Input = new IntRange(150, 255);
+			// apply the filter
+			var sw = Stopwatch.StartNew();
+			filter.ApplyInPlace(bmp2);
+			sw.Stop();
+
+			var contrast = new ContrastStretch();
+			var bmp4 = contrast.Apply(bmp2);
+
+			var bmp3 = ImageUtil.AdjustImage(bmp2, contrast: 2f);
+		}
+
+		// way too slow...
+		static void TestMatching()
+		{
+			var bitmap = (Bitmap)Bitmap.FromFile("last_screen.png");
+			var template = (Bitmap)Bitmap.FromFile("pics/1920x1200/ucorner.png");
+
+			ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(1f);
+			// find all matchings with specified above similarity
+			var sw = Stopwatch.StartNew();
+			TemplateMatch[] matchings = tm.ProcessImage(bitmap, template);
+			sw.Stop();
+			// highlight found matchings
+			BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+			foreach (TemplateMatch m in matchings)
+			{
+				Drawing.Rectangle(data, m.Rectangle, Color.White);
+			}
+			bitmap.UnlockBits(data);
 		}
 
 		static void ExtractTooltips()
@@ -76,13 +120,13 @@ namespace Tests
 					bitmap.Save(path, ImageFormat.Jpeg);
 				}
 
-				var tt2 = new TooltipWrapper<TooltipV2>(new TooltipV2(bitmap), width, height);
+				var tt2 = new TooltipWrapper<Tooltip>(new Tooltip(bitmap), width, height);
 				var result2 = new Results(tt2);
-				tt2.WrappedTooltip.SaveTemp(Path.Combine(dstPath, "tmp_v2", filename));
+				tt2.WrappedTooltip.Save(Path.Combine(dstPath, "tmp_v2", filename));
 
-				var tt = new TooltipWrapper<TooltipV1>(new TooltipV1(bitmap), width, height);
+				var tt = new TooltipWrapper<Tooltip_old>(new Tooltip_old(bitmap), width, height);
 				var result1 = new Results(tt);
-				tt.WrappedTooltip.SaveTemp(Path.Combine(dstPath, "tmp", filename));
+				tt.WrappedTooltip.Save(Path.Combine(dstPath, "tmp", filename));
 
 				var diffClass = result1.GetHashCode() == result2.GetHashCode() ? "" : "different";
 
@@ -140,7 +184,7 @@ namespace Tests
 		private static void WarmUp(string p)
 		{
 			var bitmap = Bitmap.FromFile(p) as Bitmap;
-			var tt = new TooltipV1(bitmap);
+			var tt = new Tooltip_old(bitmap);
 			var result1 = new Results(tt);
 		}
 
@@ -158,7 +202,7 @@ namespace Tests
 			html.AppendLine(@"<span class=""performance"">{0}ms</span>", r.TimeTaken);
 		}
 	}
-
+	
 	public class Results
 	{
 		public string Name { get; private set; }
@@ -171,7 +215,7 @@ namespace Tests
 
 		public long TimeTaken { get; private set; }
 
-		public Results(IResultProvider provider)
+		public Results(ITooltip provider)
 		{
 			Stopwatch timer = new Stopwatch();
 			string sockets = string.Empty, quality = "Unknown";

@@ -15,50 +15,33 @@ using System.Windows.Forms;
 using D3Bit;
 using Point = System.Drawing.Point;
 using ThreadState = System.Threading.ThreadState;
+using System.Globalization;
+using D3BitGUI.Utils;
 
 namespace D3BitGUI
 {
 	public partial class CardForm : Form
 	{
-		public const int WM_NCLBUTTONDOWN = 0xA1;
-		public const int HT_CAPTION = 0x2;
-		private const int CS_DROPSHADOW = 0x00020000;
-
-		[DllImportAttribute("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-		[DllImport("user32.dll")]
-		public static extern bool ReleaseCapture();
-		[DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-		private static extern System.IntPtr CreateRoundRectRgn
-		(
-		 int nLeftRect, // x-coordinate of upper-left corner
-		 int nTopRect, // y-coordinate of upper-left corner
-		 int nRightRect, // x-coordinate of lower-right corner
-		 int nBottomRect, // y-coordinate of lower-right corner
-		 int nWidthEllipse, // height of ellipse
-		 int nHeightEllipse // width of ellipse
-		);
-		[DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
-		private static extern bool DeleteObject(System.IntPtr hObject);
-
+		#region [ Fields & Properties ]
 		public string TooltipPath { get; private set; }
 
 		private int MAX_PROGRESS_STEPS = 6;
 
 		private Bitmap _bitmap;
 		private Bitmap _tooltipBitmap;
-		private int _progressStep = 0;
 		private Thread _thread;
 		private bool _needToClose = false;
 
 		private Dictionary<string, string> _info;
-		private Dictionary<string, string> _affixes;
+		private Dictionary<string, string> _affixes; 
+		#endregion
 
 		public CardForm()
 		{
 			InitializeComponent();
 			Location = Properties.Settings.Default.ItemCardStartPosition;
-			this.Cursor = Cursors.SizeAll;
+			Cursor = Cursors.SizeAll;
+			progressBar.Maximum = MAX_PROGRESS_STEPS;
 
 			string bgPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bg.jpg");
 			browser.ObjectForScripting = new ScriptInterface(this);
@@ -77,7 +60,6 @@ namespace D3BitGUI
 			: this()
 		{
 			_bitmap = snapshot;
-			_progressStep = 0;
 			_thread = new Thread(Process);
 			_thread.Start();
 		}
@@ -85,8 +67,9 @@ namespace D3BitGUI
 		void Process()
 		{
 			var sw = Stopwatch.StartNew();
-			_tooltipBitmap = Screenshot.GetToolTip(_bitmap);
+			_tooltipBitmap = Screenshot.GetTooltip_ImageSearch(_bitmap);
 			sw.Stop();
+
 			GUI.Debug("Tooltip extracted in {0}ms", sw.ElapsedMilliseconds);
 
 			if (_tooltipBitmap == null)
@@ -98,26 +81,27 @@ namespace D3BitGUI
 			{
 				TooltipPath = string.Format("tmp/{0}.png", DateTime.Now.Ticks);
 				_tooltipBitmap.Save(TooltipPath, ImageFormat.Png);
+
 				Tooltip tooltip = new Tooltip(_tooltipBitmap);
-				_progressStep++;
 				_info["name"] = tooltip.ParseItemName();
-				_progressStep++;
+				IncreaseProgress();
 				string quality = "Unknown";
 				_info["type"] = tooltip.ParseItemType(out quality);
 				_info["quality"] = quality;
-				_progressStep++;
+				IncreaseProgress();
+				_info["dps"] = tooltip.ParseDPS().ToString(CultureInfo.InvariantCulture);
+				IncreaseProgress();
 				_info["meta"] = tooltip.ParseMeta();
-				_progressStep++;
-				_info["dps"] = tooltip.ParseDPS()+"";
-				_progressStep++;
+				IncreaseProgress();
 				string socketBonuses = "";
 				_affixes = tooltip.ParseAffixes(out socketBonuses);
 				if (socketBonuses != "")
 					_info["meta"] += _info["meta"] == "" ? socketBonuses : "," + socketBonuses;
 				_info["stats"] = String.Join(", ", _affixes.Select(kv => (kv.Value + " " + kv.Key).Trim()));
-				_progressStep++;
+				IncreaseProgress();
+				
 				tooltip.Processed.Save("s.png", ImageFormat.Png);
-				this.UIThread(() => progressBar.Location = new Point(800, 800));
+				this.UIThread(() => progressBar.Visible = false);
 
 				Func<string, string> u = System.Uri.EscapeDataString;
 				string url = String.Format("http://d3bit.com/c/?image={0}&battletag={1}&build={2}&secret={3}&{4}&test=1",
@@ -129,7 +113,6 @@ namespace D3BitGUI
 
 				GUI.SoundFeedback(true);
 				this.UIThread(BringToFront);
-				//this.UIThread(() => TopMost = false);
 			}
 			catch (Exception ex)
 			{
@@ -138,6 +121,11 @@ namespace D3BitGUI
 				this.UIThread(Abort);
 				return;
 			}
+		}
+
+		void IncreaseProgress()
+		{
+			this.UIThread(() => progressBar.Value++);
 		}
 
 		void Abort()
@@ -152,7 +140,7 @@ namespace D3BitGUI
 			get
 			{
 				CreateParams cp = base.CreateParams;
-				cp.ClassStyle |= CS_DROPSHADOW;
+				cp.ClassStyle |= WinAPI.CS_DROPSHADOW;
 				return cp;
 			}
 		}
@@ -165,24 +153,26 @@ namespace D3BitGUI
 
 		private void CardForm_Paint(object sender, PaintEventArgs e)
 		{
-			var hb = new HatchBrush(HatchStyle.Percent50, this.TransparencyKey);
-			e.Graphics.FillRectangle(hb, this.DisplayRectangle);
+			using (var hb = new HatchBrush(HatchStyle.Percent50, this.TransparencyKey))
+			{
+				e.Graphics.FillRectangle(hb, this.DisplayRectangle);
+			}
 		}
 
 		private void CardForm_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				ReleaseCapture();
-				SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+				WinAPI.ReleaseCapture();
+				WinAPI.SendMessage(Handle, WinAPI.WM_NCLBUTTONDOWN, WinAPI.HT_CAPTION, 0);
 			}
 		}
 
 		private void CardForm_Load(object sender, EventArgs e)
 		{
-			System.IntPtr ptr = CreateRoundRectRgn(0, 0, this.Width, this.Height, 14, 14);
+			System.IntPtr ptr = WinAPI.CreateRoundRectRgn(0, 0, this.Width, this.Height, 14, 14);
 			this.Region = System.Drawing.Region.FromHrgn(ptr);
-			DeleteObject(ptr);
+			WinAPI.DeleteObject(ptr);
 		}
 
 		private void CardForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -193,10 +183,10 @@ namespace D3BitGUI
 
 		private void updater_Tick(object sender, EventArgs e)
 		{
-			if (_progressStep < MAX_PROGRESS_STEPS)
-			{
-				progressBar.Value = (int)Math.Ceiling(_progressStep / (double)MAX_PROGRESS_STEPS * 100);
-			}
+			//if (_progressStep < MAX_PROGRESS_STEPS)
+			//{
+			//    progressBar.Value = _progressStep;
+			//}
 			if (_needToClose)
 				Close();
 		}

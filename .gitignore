@@ -73,3 +73,5 @@ packages/
 /!Data/Tooltips/tmp/*.bmp
 /!Data/Tooltips/images/*.jpg
 /!Data/Tooltips/*.zip
+/Build/tesseract/*.png
+/Build/tesseract/*.txt

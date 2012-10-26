@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using D3Bit;
 
 namespace Tests
 {
-	public class TooltipWrapper<T> : IResultProvider
-		where T : IResultProvider
+	public class TooltipWrapper<T> : ITooltip
+		where T : ITooltip
 	{
 		#region [ Fields & Properties ]
 		private T wrappedTooltip;
@@ -32,7 +33,7 @@ namespace Tests
 			ScreenWidth = screenWidth;
 		}
 
-		#region [ IResultProvider methods ]
+		#region [ ITooltip methods ]
 		public string ParseItemName()
 		{
 			return wrappedTooltip.ParseItemName();

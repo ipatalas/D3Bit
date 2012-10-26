@@ -2,17 +2,17 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
+using NUnit.Framework;
 
 namespace D3Bit.Tests
 {
-	[TestClass]
+	[TestFixture]
 	public class LockBitmapTests
 	{
-		[TestMethod]
+		[Test]
 		public void test_if_the_pixels_match_with_the_original()
 		{
 			var path = @"..\..\..\!Data\Tooltips";

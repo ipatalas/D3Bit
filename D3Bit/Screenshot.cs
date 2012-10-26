@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace D3Bit
 {
@@ -154,15 +155,11 @@ namespace D3Bit
                 GetWindowRect(d3Proc.MainWindowHandle, out rc);
 
                 Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format24bppRgb);
-                Graphics gfxBmp = Graphics.FromImage(bmp);
-                //IntPtr hdcBitmap = gfxBmp.GetHdc();
 
-                //PrintWindow(d3Proc.MainWindowHandle, hdcBitmap, 0);
-                gfxBmp.CopyFromScreen(rc.X, rc.Y, 0, 0, new Size(rc.Width, rc.Height), CopyPixelOperation.SourceCopy);
-
-
-                //gfxBmp.ReleaseHdc(hdcBitmap);
-                gfxBmp.Dispose();
+				using (var g = Graphics.FromImage(bmp))
+				{
+					g.CopyFromScreen(rc.X, rc.Y, 0, 0, new Size(rc.Width, rc.Height), CopyPixelOperation.SourceCopy);
+				}
 
                 return bmp;
             }
@@ -212,18 +209,33 @@ namespace D3Bit
             return null;
         }
 
+		/// <summary>
+		/// Looks for the tooltip based on upper-left and bottom-right graphics
+		/// </summary>
+		/// TODO: limit the area being search by a rectangle around the mouse cursor to avoid getting incorrect tooltip
 		public static Bitmap GetTooltip_ImageSearch(Bitmap source)
 		{
 			var path = string.Format(@"pics\{0}x{1}\", source.Width, source.Height);
 			if (!Directory.Exists(path))
-			{ 
-				// fallback to slower mechanism
+			{
+				Trace.WriteLine("GetTooltip_ImageSearch(): Falling back to legacy mechanism");
+				// fallback to legacy mechanism
 				return GetToolTip(source);
 			}
 
+			var cur = Cursor.Position;
+			var projectedTooltipWidth = (int)(source.Height * 0.39); // 39% of screen resolution height
+
+			var searchArea = Rectangle.FromLTRB(
+				(int)Math.Max(0, cur.X - projectedTooltipWidth * 1.2), // a little more to the left than the projected tooltip width (sometimes the tooltip is not shown directly next to the cursor)
+				0, 
+				Math.Min(cur.X + projectedTooltipWidth * 3 / 4, source.Width),
+				(int)(source.Height * 0.7)
+			);
+
 			var findImg = "*TRANSBLACK *15 " + path;
 
-			var result = ImageUtil.ImageSearch(0, 0, source.Width, (int)(source.Height * 0.7), findImg + UpperCornerName);
+			var result = ImageUtil.ImageSearch(searchArea.Left, searchArea.Top, searchArea.Right, searchArea.Bottom, findImg + UpperCornerName);
 			if (result == "0")
 			{
 				Trace.TraceWarning("Upper-left corner not found...");
@@ -232,7 +244,14 @@ namespace D3Bit
 
 			var start = ImageSearchResultToRectangle(result);
 
-			result = ImageUtil.ImageSearch(start.Left, start.Top, start.Left + 510, source.Height, findImg + BottomCornerName);
+			searchArea = Rectangle.FromLTRB(
+				start.Left + (int)(projectedTooltipWidth * 0.9), 
+				start.Top, 
+				start.Left + (int)(projectedTooltipWidth * 1.1), 
+				source.Height
+			);
+
+			result = ImageUtil.ImageSearch(searchArea.Left, searchArea.Top, searchArea.Right, searchArea.Bottom, findImg + BottomCornerName);
 			if (result == "0")
 			{
 				Trace.TraceWarning("Bottom-right corner not found...");
@@ -240,7 +259,6 @@ namespace D3Bit
 			}
 
 			var end = ImageSearchResultToRectangle(result);
-
 			var bounds = Rectangle.FromLTRB(start.Left, start.Top, end.Right, end.Bottom);
 
 			return source.Clone(bounds, source.PixelFormat);

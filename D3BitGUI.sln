@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D3Bit", "D3Bit\D3Bit.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "Tests\Playground.csproj", "{1703D1C0-C842-49D1-ACD6-713BEE9CA0DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D3Bit.Tests", "D3Bit.Tests\D3Bit.Tests.csproj", "{516F9EDF-8C7C-4DED-AD99-F49AEE758588}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D3Bit.UnitTests", "D3Bit.Tests\D3Bit.UnitTests.csproj", "{516F9EDF-8C7C-4DED-AD99-F49AEE758588}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CEC82B3F-51F0-4896-9BA6-9BA09EA04C92}"
 	ProjectSection(SolutionItems) = preProject

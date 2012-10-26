@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace Tests
+namespace D3Bit
 {
-	public interface IResultProvider
+	public interface ITooltip
 	{
 		string ParseItemName();
 
