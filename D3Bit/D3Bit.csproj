@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Data.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="ImageUtil.cs" />
     <Compile Include="ITooltip.cs" />

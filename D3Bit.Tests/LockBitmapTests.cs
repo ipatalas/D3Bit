@@ -34,5 +34,27 @@ namespace D3Bit.Tests
 				}
 			}
 		}
+
+		[Test]
+		public void test_if_the_pixels_in_bmp_match_pixels_in_png()
+		{
+			var bmp = Bitmap.FromFile("Images/Diablo.bmp") as Bitmap;
+			var png = Bitmap.FromFile("Images/Diablo.png") as Bitmap;	
+		
+			using (var lockedBmp = bmp.Lock())
+			using (var lockedPng = png.Lock())
+			{
+				for (int x = 0; x < bmp.Width; x++)
+				{
+					for (int y = 0; y < bmp.Height; y++)
+					{
+						var pixel1 = lockedBmp.GetPixel(x, y);
+						var pixel2 = lockedPng.GetPixel(x, y);
+
+						Assert.AreEqual(pixel1, pixel2);
+					}
+				}
+			}
+		}
 	}
 }

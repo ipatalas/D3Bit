@@ -295,7 +295,7 @@ namespace D3Bit
 
 					if (socketRange.Any(x => whiteFunc(locked.GetPixel(x, y)))) // socket affix found
 					{
-						affixesStrings.Add("Empty Socket");
+						//affixesStrings.Add("Empty Socket");
 
 						var pair = Data.affixMatches.Select(p => new { p.Key, Coeff = line.DiceCoefficient(p.Value) }).OrderByDescending(o => o.Coeff).First();
 						if (pair.Coeff > 0.20)
@@ -424,7 +424,7 @@ namespace D3Bit
 						else if (list.Count > 0) // if we are too far from last affix, we need to break, because we could get "Stat Changes" text by accident
 						{
 							var distance = y - list.Last().Bottom;
-							if (distance > maxLineHeight * 4)
+							if (distance > maxLineHeight * 2)
 							{
 								break;
 							}
@@ -483,10 +483,18 @@ namespace D3Bit
 			var textBlock = Original.Clone(bound, Original.PixelFormat);
 
 			textBlock = ImageUtil.ResizeImage(textBlock, (int)(bound.Height * 2f / textBlock.Height * textBlock.Width), bound.Height * 2);
+			//using (new PerformanceLog("Type filters:"))
+			//{
+			//    textBlock = ImageUtil.AdjustImage(textBlock, contrast: 1.5f);
+			////    ClearElementalDamageBackground(textBlock);
+
+			//    var levels = new LevelsLinear();
+			//    levels.Input = new IntRange(0, 100);
+			//    levels.ApplyInPlace(textBlock);
+			//}
 			ImageUtil.ApplyThreshold(140, textBlock);
 			
 			// these makes OCR more accurate
-			//textBlock = ImageUtil.AdjustImage(textBlock, contrast: 1.5f);
 			//ImageUtil.ApplyContrast(50, textBlock);
 			//textBlock = ImageUtil.MakeGrayscale(textBlock);
 			
@@ -541,9 +549,9 @@ namespace D3Bit
 		{
 			// remove any non-neutral colors (especially reddish background from fire damage) - this is extremely fast, 0-1ms!
 			ColorFiltering filter = new ColorFiltering();
-			filter.Red = new IntRange(100, 255);
-			filter.Green = new IntRange(100, 255);
-			filter.Blue = new IntRange(100, 255);
+			filter.Red = new IntRange(150, 255);
+			filter.Green = new IntRange(150, 255);
+			filter.Blue = new IntRange(150, 255);
 			filter.ApplyInPlace(textBlock);
 		}
 		#endregion

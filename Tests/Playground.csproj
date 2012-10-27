@@ -79,7 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Extensions\TooltipExtensions.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>

@@ -1,25 +1,21 @@
 ﻿#define DEBUG_BITMAPS
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
-using D3Bit;
-using System.Drawing;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading;
-using Gma.UserActivityMonitor;
-using System.Windows.Forms;
-using System.Drawing.Imaging;
-using Tests.Extensions;
-using System.Web.UI;
 using System.Text.RegularExpressions;
-using AForge.Imaging.Filters;
+using System.Windows.Forms;
 using AForge;
 using AForge.Imaging;
-using Tests;
+using AForge.Imaging.Filters;
+using D3Bit;
+using D3Bit.Extensions;
+using Tests.Extensions;
 
 namespace Tests
 {

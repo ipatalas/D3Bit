@@ -11,7 +11,7 @@ using D3Bit;
 using Gma.UserActivityMonitor;
 using System.IO;
 using System.Drawing.Imaging;
-using Tests.Extensions;
+using D3Bit.Extensions;
 using Tests.Properties;
 
 namespace Tests
@@ -56,6 +56,7 @@ namespace Tests
 			else if (e.KeyCode == Keys.F8)
 			{
 				HandleTooltipArea();
+				//HandleIdent();
 			}
 			else if (e.KeyCode == Keys.F9)
 			{
@@ -71,6 +72,11 @@ namespace Tests
 			var bmp = GetDiabloScreenshot();
 
 			var result = Screenshot.GetTooltip_ImageSearch(bmp);
+			if (result == null)
+			{
+				tbItemSpecs.Text = "Tooltip not found";
+				return;
+			}
 			result.Save("last.png", ImageFormat.Png);
 
 			string quality, socketBonuses;
@@ -110,9 +116,6 @@ namespace Tests
 				panelDebugPictures.Controls.Add(pb);
 			}
 #endif
-
-			//var pictures = tt.DebugBitmaps.ConvertAll(img => new PictureBox { Image = img, SizeMode = PictureBoxSizeMode.AutoSize, Margin = new Padding(10) });
-			//panelDebugPictures.Controls.AddRange(pictures.ToArray());
 		}
 
 		#region [ Tooltip search tests ]
@@ -130,6 +133,29 @@ namespace Tests
 			{
 				g.DrawRectangle(Pens.Red, rect);
 				GetTooltip_ImageSearch(bmp, rect, g);
+			}
+
+			pictureBox1.Image = bmp;
+		}
+
+		private void HandleIdent()
+		{
+			tabControl1.SelectTab(tabTooltipSearch);
+
+			var bmp = GetDiabloScreenshot();
+			
+			var path = @"pics\ident.png";
+			var findImg = "*TRANSBLACK *45 " + path;
+
+			var result = ImageUtil.ImageSearch(0, 0, bmp.Width, bmp.Height, findImg + UpperCornerName);
+			if (result != "0")
+			{
+				var start = ImageSearchResultToRectangle(result);
+
+				using (var g = Graphics.FromImage(bmp))
+				{
+					g.DrawRectangle(Pens.Lime, start);
+				}
 			}
 
 			pictureBox1.Image = bmp;
