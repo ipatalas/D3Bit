@@ -219,10 +219,10 @@ namespace Tests
 
 			timer.Start();
 			DPS = provider.ParseDPS();
-			//Name = provider.ParseItemName();
-			//Type = provider.ParseItemType(out quality);
+			Name = provider.ParseItemName();
+			Type = provider.ParseItemType(out quality);
 			Meta = provider.ParseMeta();
-			//Affixes = provider.ParseAffixes(out sockets);
+			Affixes = provider.ParseAffixes(out sockets);
 
 			Quality = quality;
 			SocketBonuses = sockets;

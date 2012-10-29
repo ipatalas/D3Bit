@@ -20,6 +20,8 @@ namespace D3Bit
 		public int Width { get; private set; }
 		public int Height { get; private set; }
 
+		public int PixelsRead { get; private set; }
+
 		public LockBitmap(Bitmap source)
 		{
 			this.source = source;
@@ -97,6 +99,8 @@ namespace D3Bit
 
 			if (i > Pixels.Length - cCount)
 				throw new IndexOutOfRangeException();
+
+			PixelsRead++;
 
 			if (Depth == 24) // For 24 bpp get Red, Green and Blue
 			{

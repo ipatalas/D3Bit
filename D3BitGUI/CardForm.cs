@@ -67,7 +67,7 @@ namespace D3BitGUI
 		void Process()
 		{
 			var sw = Stopwatch.StartNew();
-			_tooltipBitmap = Screenshot.GetTooltip_ImageSearch(_bitmap);
+			_tooltipBitmap = Screenshot.GetTooltip_LinesV2(_bitmap);
 			sw.Stop();
 
 			GUI.Debug("Tooltip extracted in {0}ms", sw.ElapsedMilliseconds);

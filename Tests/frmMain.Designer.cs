@@ -38,20 +38,21 @@
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tabTooltipSearch = new System.Windows.Forms.TabPage();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.cmPictures = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabItem = new System.Windows.Forms.TabPage();
 			this.panelDebugPictures = new System.Windows.Forms.FlowLayoutPanel();
 			this.tbItemSpecs = new System.Windows.Forms.TextBox();
 			this.pbItem = new System.Windows.Forms.PictureBox();
-			this.cmPictures = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sfdImages = new System.Windows.Forms.SaveFileDialog();
+			this.toClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabItems.SuspendLayout();
 			this.tabTooltipSearch.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.cmPictures.SuspendLayout();
 			this.tabItem.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbItem)).BeginInit();
-			this.cmPictures.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -127,6 +128,7 @@
 			// 
 			// pictureBox1
 			// 
+			this.pictureBox1.ContextMenuStrip = this.cmPictures;
 			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pictureBox1.Location = new System.Drawing.Point(3, 3);
 			this.pictureBox1.Name = "pictureBox1";
@@ -134,6 +136,21 @@
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox1.TabIndex = 2;
 			this.pictureBox1.TabStop = false;
+			// 
+			// cmPictures
+			// 
+			this.cmPictures.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAsToolStripMenuItem,
+            this.toClipboardToolStripMenuItem});
+			this.cmPictures.Name = "cmPictures";
+			this.cmPictures.Size = new System.Drawing.Size(153, 70);
+			// 
+			// saveAsToolStripMenuItem
+			// 
+			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveAsToolStripMenuItem.Text = "&Save As...";
+			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
 			// 
 			// tabItem
 			// 
@@ -182,25 +199,18 @@
 			this.pbItem.TabIndex = 0;
 			this.pbItem.TabStop = false;
 			// 
-			// cmPictures
-			// 
-			this.cmPictures.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveAsToolStripMenuItem});
-			this.cmPictures.Name = "cmPictures";
-			this.cmPictures.Size = new System.Drawing.Size(124, 26);
-			// 
-			// saveAsToolStripMenuItem
-			// 
-			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
-			this.saveAsToolStripMenuItem.Text = "Save As...";
-			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
-			// 
 			// sfdImages
 			// 
 			this.sfdImages.AddExtension = false;
 			this.sfdImages.Filter = "PNG Files|*.png";
 			this.sfdImages.Title = "Save image as...";
+			// 
+			// toClipboardToolStripMenuItem
+			// 
+			this.toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
+			this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.toClipboardToolStripMenuItem.Text = "To &Clipboard";
+			this.toClipboardToolStripMenuItem.Click += new System.EventHandler(this.toClipboardToolStripMenuItem_Click);
 			// 
 			// frmMain
 			// 
@@ -214,14 +224,15 @@
 			this.Name = "frmMain";
 			this.Padding = new System.Windows.Forms.Padding(3);
 			this.Text = "frmMain";
+			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			this.tabControl1.ResumeLayout(false);
 			this.tabItems.ResumeLayout(false);
 			this.tabTooltipSearch.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			this.cmPictures.ResumeLayout(false);
 			this.tabItem.ResumeLayout(false);
 			this.tabItem.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbItem)).EndInit();
-			this.cmPictures.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -244,6 +255,7 @@
 		private System.Windows.Forms.ContextMenuStrip cmPictures;
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog sfdImages;
+		private System.Windows.Forms.ToolStripMenuItem toClipboardToolStripMenuItem;
 
 	}
 }

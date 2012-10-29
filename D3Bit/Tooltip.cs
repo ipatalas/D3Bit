@@ -266,7 +266,7 @@ namespace D3Bit
 			if (!string.IsNullOrEmpty(socketBonuses) || emptySockets > 0)
 			{
 				var sockets = socketBonuses.Count(c => c == ',');
-				if (sockets > 0)
+				if (sockets > 0 || !string.IsNullOrEmpty(socketBonuses))
 				{
 					sockets++;
 				}
