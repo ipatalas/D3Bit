@@ -234,8 +234,6 @@ namespace Tests
 
 				return source.Clone(ttRect, source.PixelFormat);
 			}
-
-			return null; // return source.Clone(bounds, source.PixelFormat);
 		}
 
 		private Line FindVerticalBorder(LockBitmap locked, IEnumerable<int> range, int y, Func<double, int> v, Func<Color, bool> borderFunc, bool isLeft = true)
@@ -290,9 +288,16 @@ namespace Tests
 						int right = CountPixelsHorizontal(locked, blackFunc, rightRange, y); // count black pixels to the right from current pos
 
 						var line_width = left + right + 1;
+
+						if (line_width > v(39))
+						{
+							// make bigger steps when longer lines are found, they waste a lot of pixels and give no results (step is almost like tooltip border width)
+							y += v(0.5);
+							continue;
+						}
 						if (line_width > v(37) && line_width < v(39)) // potential tooltip width, can't calculate it to the pixel's accuracy
 						{
-							if (!firstLineX.HasValue && lines.Count > 0 && lines.Last().P1.X != x - left) // group only lines with the same beginning (x-pos)
+							if (!firstLineX.HasValue && lines.Count > 0 && lines.Last().P1.X != x - left) // group only lines with the same x-pos
 							{								
 								lines.Clear();
 							}
@@ -303,7 +308,7 @@ namespace Tests
 								g.DrawLine(Pens.Lime, lines.Last().P1, lines.Last().P2);
 							}
 
-							if (!firstLineX.HasValue && lines.Count > blackLinesThreshold) // already found the beginning of the tooltip
+							if (!firstLineX.HasValue && lines.Count > blackLinesThreshold) // just found the beginning of the tooltip
 							{
 								firstLineX = lines[0].P1.X;
 
