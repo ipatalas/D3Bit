@@ -314,6 +314,13 @@ namespace D3Bit
 						int right = CountPixelsHorizontal(locked, blackFunc, rightRange, y); // count black pixels to the right from current pos
 
 						var line_width = left + right + 1;
+						
+						if (line_width > v(39))
+						{
+							// make bigger steps when longer lines are found, they "waste" a lot of pixels and give no results (step is almost like tooltip border width)
+							y += v(0.5);
+							continue;
+						}
 						if (line_width > v(37) && line_width < v(39)) // potential tooltip width, can't calculate it to one pixel's accuracy, need an estimate
 						{
 							//g.DrawLine(Pens.Lime, x - left, y, x + right, y);
