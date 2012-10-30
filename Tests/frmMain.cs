@@ -51,6 +51,8 @@ namespace Tests
 
 		private void HookManager_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
+			Trace.TraceInformation("KeyUp code: {0}", e.KeyCode);
+
 			if (e.KeyCode == System.Windows.Forms.Keys.F7)
 			{
 				HandleScreenshot();
@@ -69,14 +71,18 @@ namespace Tests
 		void HandleItem()
 		{
 			tabControl1.SelectTab(tabItem);
-			panelDebugPictures.Controls.Clear();			
+			panelDebugPictures.Controls.Clear();
+
+			tbItemSpecs.Text = "Hello :)\r\n";
 
 			var bmp = GetDiabloScreenshot();
+
+			bmp.Save("last_screenshot.png", ImageFormat.Png);
 
 			var result = Screenshot.GetTooltip_LinesV2(bmp);
 			if (result == null)
 			{
-				tbItemSpecs.Text = "Tooltip not found";
+				tbItemSpecs.Text += "Tooltip not found\r\n";
 				return;
 			}
 			result.Save("last.png", ImageFormat.Png);
@@ -101,7 +107,7 @@ namespace Tests
 			//sb.AppendLine();
 			//sb.AppendLine("{0}ms", sw.ElapsedMilliseconds);
 			
-			tbItemSpecs.Text = JsonConvert.SerializeObject(r, Formatting.Indented);
+			tbItemSpecs.Text += JsonConvert.SerializeObject(r, Formatting.Indented);
 
 #if DEBUG
 			foreach (var item in tt.DebugBitmaps)
@@ -258,7 +264,7 @@ namespace Tests
 		{
 			var lines = new List<Line>();
 			
-			Func<Color, bool> blackFunc = c => c.R < 5 && c.G < 5 && c.B < 5;
+			Func<Color, bool> blackFunc = c => c.R < 10 && c.G < 10 && c.B < 10;
 			var blackLinesThreshold = (int)Math.Floor(0.6 / 100 * locked.Height); // 0,6% of Height
 
 			// It doesn't make sense to start search at the beginning of searchArea as it always covers the upper-left corner, 
@@ -294,6 +300,7 @@ namespace Tests
 							if (!firstLineX.HasValue || lines[0].P1.X == x - left)
 							{
 								lines.Add(new Line(new Point(x - left, y), new Point(x + right, y)));
+								g.DrawLine(Pens.Lime, lines.Last().P1, lines.Last().P2);
 							}
 
 							if (!firstLineX.HasValue && lines.Count > blackLinesThreshold) // already found the beginning of the tooltip

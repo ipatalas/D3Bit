@@ -288,7 +288,7 @@ namespace D3Bit
 		{
 			var lines = new List<Line>();
 
-			Func<Color, bool> blackFunc = c => c.R < 5 && c.G < 5 && c.B < 5;
+			Func<Color, bool> blackFunc = c => c.R < 10 && c.G < 10 && c.B < 10;
 			var blackLinesThreshold = (int)Math.Floor(0.6 / 100 * locked.Height); // 0,6% of Height
 
 			// It doesn't make sense to start search at the beginning of searchArea as it always covers the upper-left corner, 
@@ -335,7 +335,7 @@ namespace D3Bit
 								// already found a potential tooltip, so need to adjust X a bit, so that it's more efficiently used (as less pixels checked as possible)
 								// leaving it as it is would cause the algorithm to find a lot of black areas inside the tooltip (and a lot of pixels read for no reason),
 								// but if we move X just next to the left border then the other inner border of the tooltip will stop search very soon for each line, reducing the number of checked pixels massively
-								// Note: it's safe to modify a loop iterator as the code won't iterate more over the outer loop anyway (see below: if (firstLineX.HasValue))
+								// Note: it's safe to modify a loop iterator as the code won't iterate more over the outer loop anyway (see below: #1)
 								x = firstLineX.Value;
 
 								searchArea.Height = locked.Height - searchArea.Top; // extend searchArea to the bottom (almost.. see comment below)
@@ -348,7 +348,7 @@ namespace D3Bit
 					}
 				}
 
-				if (firstLineX.HasValue)
+				if (firstLineX.HasValue) // #1
 				{
 					return lines;
 				}
@@ -418,7 +418,6 @@ namespace D3Bit
 		/// <summary>
 		/// Looks for the tooltip based on upper-left and bottom-right graphics
 		/// </summary>
-		/// TODO: limit the area being search by a rectangle around the mouse cursor to avoid getting incorrect tooltip (when two are visible)
 		//public static Bitmap GetTooltip_ImageSearch(Bitmap source)
 		//{
 		//    var path = string.Format(@"pics\{0}x{1}\", source.Width, source.Height);
