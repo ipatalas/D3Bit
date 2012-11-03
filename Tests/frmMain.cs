@@ -66,6 +66,10 @@ namespace Tests
 			{
 				HandleItem();
 			}
+			else if (e.KeyCode == Keys.F10)
+			{
+				BatchSaveForUnitTests();
+			}
 		}
 
 		void HandleItem()
@@ -73,7 +77,7 @@ namespace Tests
 			tabControl1.SelectTab(tabItem);
 			panelDebugPictures.Controls.Clear();
 
-			tbItemSpecs.Text = "Hello :)\r\n";
+			Trace.TraceInformation("Hello :)");
 
 			var bmp = GetDiabloScreenshot();
 
@@ -82,7 +86,7 @@ namespace Tests
 			var result = Screenshot.GetTooltip_LinesV2(bmp);
 			if (result == null)
 			{
-				tbItemSpecs.Text += "Tooltip not found\r\n";
+				tbItemSpecs.Text = "Tooltip not found";
 				return;
 			}
 			result.Save("last.png", ImageFormat.Png);
@@ -94,7 +98,7 @@ namespace Tests
 
 			pbItem.Image = tt.Processed;
 
-			SaveForUnitTests(r, result, bmp.Size);
+			//SaveForUnitTests(r, result, bmp.Size);
 
 			//var sb = new StringBuilder();
 			//sb.AppendLine("Name: {0}", r.Name);
@@ -107,7 +111,7 @@ namespace Tests
 			//sb.AppendLine();
 			//sb.AppendLine("{0}ms", sw.ElapsedMilliseconds);
 			
-			tbItemSpecs.Text += JsonConvert.SerializeObject(r, Formatting.Indented);
+			tbItemSpecs.Text = JsonConvert.SerializeObject(r, Formatting.Indented);
 
 #if DEBUG
 			foreach (var item in tt.DebugBitmaps)
@@ -123,6 +127,41 @@ namespace Tests
 		}
 
 		[Conditional("EXTRACT_TOOLTIPS")]
+		private void BatchSaveForUnitTests()
+		{
+			var path = @"d:\Programs\Benchmarks\Fraps\Screenshots";
+
+			var pb = new ProgressBar();
+			pb.Maximum = 18;
+			pb.Dock = DockStyle.Bottom;
+			Controls.Add(pb);
+			pb.Show();
+
+			foreach (var file in Directory.GetFiles(path, "*.png"))
+			{
+				var bmp = Bitmap.FromFile(file) as Bitmap;
+				var result = Screenshot.GetTooltip_LinesV2(bmp, false);
+				if (result == null)
+				{
+					Debugger.Break();
+					return;
+				}
+				
+				var tt = new D3Bit.Tooltip(result);
+				var r = new Results(tt);
+				
+				pbItem.Image = tt.Processed;
+
+				SaveForUnitTests(r, result, bmp.Size);
+				pb.Increment(1);
+				Trace.TraceInformation("Saved " + r.Name);
+				bmp.Dispose();
+			}
+			pb.Hide();
+			MessageBox.Show("Done!");
+		}
+
+		[Conditional("EXTRACT_TOOLTIPS")]
 		private void SaveForUnitTests(Results r, Bitmap result, System.Drawing.Size size)
 		{
 			var path = Path.Combine("Tooltips", string.Format("{0}x{1}", size.Width, size.Height));
@@ -133,7 +172,7 @@ namespace Tests
 			do
 			{
 				i++;
-				filepath = Path.Combine(path, i.ToString() + ".png");
+				filepath = Path.Combine(path, i.ToString("00") + ".png");
 			} while (File.Exists(filepath));
 
 			result.Save(filepath, ImageFormat.Png);

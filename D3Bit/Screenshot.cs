@@ -18,8 +18,15 @@ namespace D3Bit
 
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+		[DllImport("user32.dll")]
+		public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
+
+		[DllImport("user32.dll")]
+		static extern bool ClientToScreen(IntPtr hWnd, ref Point lpPoint);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
@@ -146,19 +153,24 @@ namespace D3Bit
                 return false;
             }
         }
-
+				
         public static Bitmap GetSnapShot(Process d3Proc)
         {
             if (d3Proc != null)
             {
                 RECT rc;
-                GetWindowRect(d3Proc.MainWindowHandle, out rc);
+                //GetWindowRect(d3Proc.MainWindowHandle, out rc);
+				// need to use Client area of the window, otherwise it won't work in Windowed mode
+				GetClientRect(d3Proc.MainWindowHandle, out rc);
+
+				Point location = rc.Location;
+				ClientToScreen(d3Proc.MainWindowHandle, ref location);
 
                 Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format24bppRgb);
 
 				using (var g = Graphics.FromImage(bmp))
 				{
-					g.CopyFromScreen(rc.X, rc.Y, 0, 0, new Size(rc.Width, rc.Height), CopyPixelOperation.SourceCopy);
+					g.CopyFromScreen(location.X, location.Y, 0, 0, rc.Size, CopyPixelOperation.SourceCopy);
 				}
 
                 return bmp;
@@ -210,7 +222,7 @@ namespace D3Bit
         }
 
 		#region [ New tooltip search method ]
-		public static Bitmap GetTooltip_LinesV2(Bitmap source)
+		public static Bitmap GetTooltip_LinesV2(Bitmap source, bool limitSearchArea = true)
 		{
 			Func<double, int> h = percent => (int)Math.Round(percent / 100.0 * source.Width);
 			Func<double, int> v = percent => (int)Math.Round(percent / 100.0 * source.Height);
@@ -219,13 +231,17 @@ namespace D3Bit
 			var cur = Cursor.Position;
 			var projectedTooltipWidth = v(39); // 39% of screen resolution, that's pretty much how it scales
 
-			// limit the area being searched by a rectangle around the mouse cursor to avoid getting incorrect tooltip (when two are visible)
-			var searchArea = Rectangle.FromLTRB(
-				(int)Math.Max(0, cur.X - projectedTooltipWidth * 1.2), // a little more to the left than the projected tooltip width (sometimes the tooltip is not shown directly next to the cursor)
-				0,
-				Math.Min(cur.X + projectedTooltipWidth * 3 / 4, source.Width),
-				(int)(source.Height * 0.7)
-			);
+			Rectangle searchArea = new Rectangle(Point.Empty, source.Size);
+			if (limitSearchArea)
+			{
+				// limit the area being searched by a rectangle around the mouse cursor to avoid getting incorrect tooltip (when two are visible)
+				searchArea = Rectangle.FromLTRB(
+					(int)Math.Max(0, cur.X - projectedTooltipWidth * 1.2), // a little more to the left than the projected tooltip width (sometimes the tooltip is not shown directly next to the cursor)
+					0,
+					Math.Min(cur.X + projectedTooltipWidth * 3 / 4, source.Width),
+					(int)(source.Height * 0.8)
+				);
+			}
 
 			var searchAreaSize = searchArea.Width * searchArea.Height;
 

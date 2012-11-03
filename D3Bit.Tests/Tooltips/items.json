@@ -1,0 +1,291 @@
+[
+{
+  "Name": "SKYWARDEN",
+  "Meta": "119-152,0.93",
+  "Type": "Two-Handed Mace",
+  "Quality": "Legendary",
+  "SocketBonuses": "",
+  "DPS": 125.6,
+  "Affixes": {
+    "HolyD": "13-39",
+    "Dex": "132",
+    "AtkSpd": "3",
+    "LoK": "97",
+    "Bleed": "22.7",
+    "Soc": "2"
+  },
+  "TimeTaken": 856
+},
+{
+  "Name": "CHAMPION BATTERSMASH OF SMITING",
+  "Meta": "306-436,1.00",
+  "Type": "Two-Handed Mighty Weapon",
+  "Quality": "Magic",
+  "SocketBonuses": "",
+  "DPS": 371.0,
+  "Affixes": {
+    "HolyD": "63-173",
+    "Str": "110",
+    "Int": "65"
+  },
+  "TimeTaken": 577
+},
+{
+  "Name": "WILD BIRMSTONE SWORD OF IMMOLATION",
+  "Meta": "201-349,1.10",
+  "Type": "Two-Handed Sword",
+  "Quality": "Magic",
+  "SocketBonuses": "",
+  "DPS": 302.5,
+  "Affixes": {
+    "FireD": "42-110",
+    "Dex": "42",
+    "Vit": "71"
+  },
+  "TimeTaken": 684
+},
+{
+  "Name": "SOCKETED FRANCISCA OF IMMOLATION",
+  "Meta": "76-103,1.00",
+  "Type": "Two-Handed Axe",
+  "Quality": "Magic",
+  "SocketBonuses": "",
+  "DPS": 89.5,
+  "Affixes": {
+    "FireD": "9-23",
+    "Soc": "1"
+  },
+  "TimeTaken": 524
+},
+{
+  "Name": "STEADFAST COLOSSUS AXE OF IMMOLATION",
+  "Meta": "200-239,1.00",
+  "Type": "Two-Handed Mighty Weapon",
+  "Quality": "Magic",
+  "SocketBonuses": "",
+  "DPS": 219.5,
+  "Affixes": {
+    "FireD": "35-62",
+    "Dex": "65",
+    "Int": "159"
+  },
+  "TimeTaken": 556
+},
+{
+  "Name": "BASTION'S REVERED",
+  "Meta": "73-81,1.00",
+  "Type": "Two-Handed Mighty Weapon",
+  "Quality": "Legendary",
+  "SocketBonuses": "",
+  "DPS": 77.0,
+  "Affixes": {
+    "ColdD": "6-10",
+    "Dmg%": "15",
+    "Str": "123",
+    "MaxFury": "7",
+    "LS": "4.20",
+    "Crit": "1.0"
+  },
+  "TimeTaken": 649
+},
+{
+  "Name": "ECHOING FURY",
+  "Meta": "420-738,1.42",
+  "Type": "Mace",
+  "Quality": "Legendary",
+  "SocketBonuses": "",
+  "DPS": 822.1,
+  "Affixes": {
+    "MinD": "144",
+    "MaxD": "230",
+    "Dmg%": "38",
+    "Str": "137",
+    "Dex": "167",
+    "LRegen": "0.22",
+    "Fear": "19.6",
+    "Knockback": "1.3"
+  },
+  "TimeTaken": 649
+},
+{
+  "Name": "BULK VAULT",
+  "Meta": "429-926,1.30",
+  "Type": "Mighty Weapon",
+  "Quality": "Rare",
+  "SocketBonuses": "",
+  "DPS": 880.6,
+  "Affixes": {
+    "FireD": "260-611",
+    "Dmg%": "12",
+    "Str": "246",
+    "Int": "108",
+    "Vit": "112",
+    "Soc": "1"
+  },
+  "TimeTaken": 460
+},
+{
+  "Name": "IVORY TOWER",
+  "Meta": "11.0%,1960-4706",
+  "Type": "Shield",
+  "Quality": "Legendary",
+  "SocketBonuses": "",
+  "DPS": 868.0,
+  "Affixes": {
+    "Str": "191",
+    "Vit": "147",
+    "AR": "58",
+    "Life%": "12",
+    "LRegen": "116",
+    "RDMelee": "4"
+  },
+  "TimeTaken": 544
+},
+{
+  "Name": "SKIRMISH MIND",
+  "Meta": "780-1058,1.00",
+  "Type": "Two-Handed Axe",
+  "Quality": "Rare",
+  "SocketBonuses": "",
+  "DPS": 919.0,
+  "Affixes": {
+    "PoisonD": "272-443",
+    "Int": "335",
+    "LoH": "1894",
+    "LS": "5.00"
+  },
+  "TimeTaken": 573
+},
+{
+  "Name": "AWFUL SCOURGE",
+  "Meta": "415-861,1.40",
+  "Type": "Sword",
+  "Quality": "Rare",
+  "SocketBonuses": "100 CritD",
+  "DPS": 893.2,
+  "Affixes": {
+    "LtnD": "308-614",
+    "Str": "172",
+    "Dex": "69",
+    "Vit": "109",
+    "CritD": "72",
+    "Soc": "0"
+  },
+  "TimeTaken": 551
+},
+{
+  "Name": "IMMORTAL KING'S TRIUMPH",
+  "Meta": "",
+  "Type": "Helm",
+  "Quality": "Set",
+  "SocketBonuses": "29 Exp%",
+  "DPS": 431.0,
+  "Affixes": {
+    "Str": "100",
+    "Int": "77",
+    "Life%": "10",
+    "Crit": "5.5",
+    "RDMelee": "6",
+    "Soc": "0"
+  },
+  "TimeTaken": 613
+},
+{
+  "Name": "SOLDIER'S REIGN",
+  "Meta": "",
+  "Type": "Chest Armor",
+  "Quality": "Rare",
+  "SocketBonuses": "46 Str, 46 Str",
+  "DPS": 372.0,
+  "Affixes": {
+    "Str": "123",
+    "Vit": "184",
+    "LtnR": "32",
+    "AR": "62",
+    "Soc": "2"
+  },
+  "TimeTaken": 518
+},
+{
+  "Name": "RIVET FANG",
+  "Meta": "",
+  "Type": "Mighty Belt",
+  "Quality": "Rare",
+  "SocketBonuses": "",
+  "DPS": 345.0,
+  "Affixes": {
+    "Str": "206",
+    "Dex": "51",
+    "AR": "65",
+    "LS": "2.80"
+  },
+  "TimeTaken": 388
+},
+{
+  "Name": "HYPNOSIS RAGE",
+  "Meta": "",
+  "Type": "Amulet",
+  "Quality": "Rare",
+  "SocketBonuses": "",
+  "DPS": 0.0,
+  "Affixes": {
+    "MinD": "34",
+    "MaxD": "100",
+    "Vit": "133",
+    "LoH": "341",
+    "Life%": "12",
+    "Crit": "8.5"
+  },
+  "TimeTaken": 415
+},
+{
+  "Name": "WORLD SIGNET",
+  "Meta": "",
+  "Type": "Ring",
+  "Quality": "Rare",
+  "SocketBonuses": "",
+  "DPS": 0.0,
+  "Affixes": {
+    "Int": "31",
+    "Vit": "121",
+    "PhyR": "38",
+    "AR": "49",
+    "AtkSpd": "9",
+    "Crit": "3.5"
+  },
+  "TimeTaken": 472
+},
+{
+  "Name": "IMMORTAL KING'S STRIDE",
+  "Meta": "",
+  "Type": "Boots",
+  "Quality": "Set",
+  "SocketBonuses": "",
+  "DPS": 330.0,
+  "Affixes": {
+    "Str": "94",
+    "Int": "89",
+    "Vit": "93",
+    "AR": "73",
+    "MvSpd": "12",
+    "ReCC": "13"
+  },
+  "TimeTaken": 594
+},
+{
+  "Name": "OUTCAST SPINE",
+  "Meta": "387-914,1.40",
+  "Type": "Ceremonial Knife",
+  "Quality": "Rare",
+  "SocketBonuses": "",
+  "DPS": 910.7,
+  "Affixes": {
+    "MinD": "31",
+    "ArcD": "284-624",
+    "Dex": "89",
+    "Int": "93",
+    "ManaRegen": "14"
+  },
+  "TimeTaken": 601
+}
+]

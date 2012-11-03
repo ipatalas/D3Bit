@@ -193,7 +193,7 @@ namespace D3Bit
 			var dpsBlock = ExtractDpsTextBitmapForOCR(dpsBound);
 			AddDebugBitmap(dpsBlock); 
 
-			var text = Tesseract.GetTextFromBitmap(dpsBlock, @"-psm 7 nobatch tesseract\d3digits");
+			var text = Tesseract.GetTextFromBitmap(dpsBlock, @"-psm 7 nobatch tesseract\d3digits").TrimEnd('.');
 			double.TryParse(text, System.Globalization.NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dps);
 
 			return dps;

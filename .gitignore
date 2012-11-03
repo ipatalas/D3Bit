@@ -75,3 +75,4 @@ packages/
 /!Data/Tooltips/*.zip
 /Build/tesseract/*.png
 /Build/tesseract/*.txt
+/Build/*.zip
