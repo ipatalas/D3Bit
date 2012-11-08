@@ -64,7 +64,17 @@ namespace D3BitGUI
             t.Start();
             Text += " " + version;
             notifyIcon1.Text = "D3Bit " + version;
-            (new System.IO.DirectoryInfo("tmp")).Empty();
+
+			var di = new System.IO.DirectoryInfo("tmp");
+			if (!di.Exists)
+			{
+				di.Create();
+			}
+			else
+			{
+				di.Empty();
+			}
+
             D3Bit.Data.LoadAffixes(Properties.Settings.Default.ScanLanguage);
 
             /*

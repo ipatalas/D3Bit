@@ -159,8 +159,7 @@ namespace D3Bit
             if (d3Proc != null)
             {
                 RECT rc;
-                //GetWindowRect(d3Proc.MainWindowHandle, out rc);
-				// need to use Client area of the window, otherwise it won't work in Windowed mode
+                // need to use Client area of the window, otherwise it won't work in Windowed mode
 				GetClientRect(d3Proc.MainWindowHandle, out rc);
 
 				Point location = rc.Location;
@@ -436,67 +435,6 @@ namespace D3Bit
 			return count;
 		}
 
-		#endregion
-
-		/// <summary>
-		/// Looks for the tooltip based on upper-left and bottom-right graphics
-		/// </summary>
-		//public static Bitmap GetTooltip_ImageSearch(Bitmap source)
-		//{
-		//    var path = string.Format(@"pics\{0}x{1}\", source.Width, source.Height);
-		//    if (!Directory.Exists(path))
-		//    {
-		//        Trace.WriteLine("GetTooltip_ImageSearch(): Falling back to legacy mechanism");
-		//        // fallback to legacy mechanism
-		//        return GetToolTip(source);
-		//    }
-
-		//    var cur = Cursor.Position;
-		//    var projectedTooltipWidth = (int)(source.Height * 0.39); // 39% of screen resolution height
-
-		//    var searchArea = Rectangle.FromLTRB(
-		//        (int)Math.Max(0, cur.X - projectedTooltipWidth * 1.2), // a little more to the left than the projected tooltip width (sometimes the tooltip is not shown directly next to the cursor)
-		//        0, 
-		//        Math.Min(cur.X + projectedTooltipWidth * 3 / 4, source.Width),
-		//        (int)(source.Height * 0.7)
-		//    );
-
-		//    var findImg = "*TRANSBLACK *15 " + path;
-
-		//    var result = ImageUtil.ImageSearch(searchArea.Left, searchArea.Top, searchArea.Right, searchArea.Bottom, findImg + UpperCornerName);
-		//    if (result == "0")
-		//    {
-		//        Trace.TraceWarning("Upper-left corner not found...");
-		//        return null;
-		//    }
-
-		//    var start = ImageSearchResultToRectangle(result);
-
-		//    searchArea = Rectangle.FromLTRB(
-		//        start.Left + (int)(projectedTooltipWidth * 0.9), 
-		//        start.Top, 
-		//        start.Left + (int)(projectedTooltipWidth * 1.1), 
-		//        source.Height
-		//    );
-
-		//    result = ImageUtil.ImageSearch(searchArea.Left, searchArea.Top, searchArea.Right, searchArea.Bottom, findImg + BottomCornerName);
-		//    if (result == "0")
-		//    {
-		//        Trace.TraceWarning("Bottom-right corner not found...");
-		//        return null;
-		//    }
-
-		//    var end = ImageSearchResultToRectangle(result);
-		//    var bounds = Rectangle.FromLTRB(start.Left, start.Top, end.Right, end.Bottom);
-
-		//    return source.Clone(bounds, source.PixelFormat);
-		//}
-
-		//static Rectangle ImageSearchResultToRectangle(string result)
-		//{
-		//    var split = result.Split('|').ToList().ConvertAll(x => int.Parse(x));
-
-		//    return new Rectangle(split[1], split[2], split[3], split[4]);
-		//}
+		#endregion		
     }
 }
