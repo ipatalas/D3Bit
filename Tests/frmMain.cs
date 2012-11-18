@@ -80,10 +80,10 @@ namespace Tests
 			Trace.TraceInformation("Hello :)");
 
 			var bmp = GetDiabloScreenshot();
-
+			
 			bmp.Save("last_screenshot.png", ImageFormat.Png);
 
-			var result = Screenshot.GetTooltip_LinesV2(bmp);
+			var result = Screenshot.GetTooltip(bmp);
 			if (result == null)
 			{
 				tbItemSpecs.Text = "Tooltip not found";
@@ -140,7 +140,7 @@ namespace Tests
 			foreach (var file in Directory.GetFiles(path, "*.png"))
 			{
 				var bmp = Bitmap.FromFile(file) as Bitmap;
-				var result = Screenshot.GetTooltip_LinesV2(bmp, false);
+				var result = Screenshot.GetTooltip(bmp, false);
 				if (result == null)
 				{
 					Debugger.Break();
@@ -487,7 +487,7 @@ namespace Tests
 			var bmp = GetDiabloScreenshot();// new Bitmap(@"..\..\..\last_screen.png");
 
 			var sw = Stopwatch.StartNew();
-			var result = Screenshot.GetTooltip_LinesV2(bmp);
+			var result = Screenshot.GetTooltip(bmp);
 			sw.Stop();
 			time1 = sw.ElapsedMilliseconds;
 
@@ -505,25 +505,9 @@ namespace Tests
 			{
 				SaveTooltip(result, bmp.Size, "imagesearch");
 			}
-#endif
+#endif			
 
-			sw.Restart();
-			result = Screenshot.GetToolTip(bmp);
-			sw.Stop();
-			time2 = sw.ElapsedMilliseconds;
-
-			if (result == null)
-			{
-				AddError("Cannot recognize tooltip with legacy method");
-			}
-#if EXTRACT_TOOLTIPS
-			else
-			{
-				//SaveTooltip(result, bmp.Size, "lines");
-			}
-#endif
-
-			AddItem("Unknown - " + Cursor.Position.ToString(), "Unknown", time1, time2);
+			AddItem("Unknown - " + Cursor.Position.ToString(), "Unknown", time1, 0);
 			Console.WriteLine("Tooltip extracted in {0}ms", sw.ElapsedMilliseconds);
 
 			nameCounter[bmp.Size]++;

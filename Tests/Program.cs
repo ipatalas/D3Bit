@@ -120,11 +120,11 @@ namespace Tests
 				var result2 = new Results(tt2);
 				tt2.WrappedTooltip.Save(Path.Combine(dstPath, "tmp_v2", filename));
 
-				var tt = new TooltipWrapper<Tooltip_old>(new Tooltip_old(bitmap), width, height);
-				var result1 = new Results(tt);
-				tt.WrappedTooltip.Save(Path.Combine(dstPath, "tmp", filename));
+				//var tt = new TooltipWrapper<Tooltip_old>(new Tooltip_old(bitmap), width, height);
+				//var result1 = new Results(tt);
+				//tt.WrappedTooltip.Save(Path.Combine(dstPath, "tmp", filename));
 
-				var diffClass = result1.GetHashCode() == result2.GetHashCode() ? "" : "different";
+				var diffClass = ""; // result1.GetHashCode() == result2.GetHashCode() ? "" : "different";
 
 				html.AppendLine(@"<tr class=""{0}"">", diffClass);
 				
@@ -143,11 +143,11 @@ namespace Tests
 				html.AppendLine("<img src='tmp_v2/{0}' />", filename);
 				html.AppendLine("</td>");
 
-				html.AppendLine(@"<td class=""original"">");
-				html.AppendLine("<pre>");
-				RenderResults(html, result1);
-				html.AppendLine("</pre>");
-				html.AppendLine("</td>");
+				//html.AppendLine(@"<td class=""original"">");
+				//html.AppendLine("<pre>");
+				//RenderResults(html, result1);
+				//html.AppendLine("</pre>");
+				//html.AppendLine("</td>");
 
 				html.AppendLine(@"<td class=""improved"">");
 				html.AppendLine("<pre>");
@@ -157,7 +157,7 @@ namespace Tests
 				
 				html.AppendLine("</tr>");
 
-				results1.Add(result1);
+				//results1.Add(result1);
 				results2.Add(result2);
 
 				Console.WriteLine("{0}/{1}", i++, files.Count());
@@ -179,9 +179,9 @@ namespace Tests
 
 		private static void WarmUp(string p)
 		{
-			var bitmap = Bitmap.FromFile(p) as Bitmap;
-			var tt = new Tooltip_old(bitmap);
-			var result1 = new Results(tt);
+			//var bitmap = Bitmap.FromFile(p) as Bitmap;
+			//var tt = new Tooltip_old(bitmap);
+			//var result1 = new Results(tt);
 		}
 
 		private static void RenderResults(StringBuilder html, Results r)

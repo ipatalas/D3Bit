@@ -31,5 +31,24 @@ namespace D3BitGUI.Utils
 
 		[DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
 		public static extern bool DeleteObject(System.IntPtr hObject);
+
+		[DllImport("user32", SetLastError = true)]
+		public static extern int GetForegroundWindow();
+
+		[DllImport("user32", SetLastError = true)]
+		public static extern int GetWindowThreadProcessId(int hwnd, ref int lProcessId);
+
+		public static int GetProcessThreadFromWindow(int hwnd)
+		{
+			int procid = 0;
+			int threadid = GetWindowThreadProcessId(hwnd, ref procid);
+			return procid;
+		}
+
+		public static int GetForegroundProcessId()
+		{
+			int hwnd = GetForegroundWindow();
+			return GetProcessThreadFromWindow(hwnd);
+		}
 	}
 }

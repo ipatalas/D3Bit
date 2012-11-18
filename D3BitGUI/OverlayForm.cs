@@ -163,7 +163,7 @@ namespace D3BitGUI
 
         void Process()
         {
-            tooltipBitmap = Screenshot.GetToolTip(_bitmap);
+            tooltipBitmap = Screenshot.GetTooltip(_bitmap);
             if (tooltipBitmap == null)
             {
                 Abort();

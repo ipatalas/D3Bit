@@ -366,23 +366,6 @@ namespace D3Bit
 			return mergedAffixes;
 		}
 
-		private void FixLifeAffix(Dictionary<string, string> affixes)
-		{
-			var lifeKey = "Life%";
-			if (affixes.ContainsKey(lifeKey))
-			{
-				int n;
-				if (int.TryParse(affixes[lifeKey], out n))
-				{
-					if (n > 20)
-					{
-						n = int.Parse(n.ToString().Substring(0, 1));
-					}
-					affixes[lifeKey] = n.ToString();
-				}
-			}
-		}
-
 		private List<Rectangle> GetAffixesBounds(Rectangle affixesBound, Func<Color, bool> colorFunc, int xStart, int xEnd)
 		{
 			var list = new List<Rectangle>();

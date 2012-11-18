@@ -16,6 +16,7 @@ using D3Bit;
 using Gma.UserActivityMonitor;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace D3BitGUI
 {
@@ -26,11 +27,24 @@ namespace D3BitGUI
         private static string debugStr = "";
         private static bool needToUpdateDebugStr = false;
         private Thread t;
+		private static SoundPlayer sndGood;
+		private static SoundPlayer sndError;
 
         public GUI()
         {
             InitializeComponent();
-            try
+
+			if (!File.Exists("notify.wav") || !File.Exists("ringout.wav"))
+			{
+				MessageBox.Show("Make sure both notify.wav and ringout.wav exist in the application folder.");
+				Environment.Exit(1);
+				return;
+			}
+
+			sndGood = new SoundPlayer("notify.wav");
+			sndError = new SoundPlayer("ringout.wav");
+         
+			try
             {
                 Registry.SetValue(
                     @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION",
@@ -40,28 +54,11 @@ namespace D3BitGUI
                     "D3BitGUI.exe", 9999);
             }
             catch { }
-            HookManager.KeyUp += OnKeyUp;
-            t = new Thread(()=>
-                               {
-                                   try
-                                   {
-                                       string res = Util.GetPageSource("http://d3bit.com/data/json/info.json");
-                                       JObject o = JObject.Parse(res);
-                                       if (o["version"] != null)
-                                       {
-                                           if (o["version"].ToString() == version)
-                                               Log("Your version of D3Bit is up-to-date.");
-                                           else
-                                               Log("There's a new version of D3Bit, available at http://d3bit.com/");
-                                           if (o["msg"] != null && o["msg"].ToString().Length > 0)
-                                               Log("{0}", o["msg"]);
-                                           return;
-                                       }
-                                   }
-                                   catch { }
-                                   Log("Cannot fetch version info. Please check your connection.");
-                               });
+
+			HookManager.KeyUp += OnKeyUp;
+            t = new Thread(CheckForUpdates);
             t.Start();
+
             Text += " " + version;
             notifyIcon1.Text = "D3Bit " + version;
 
@@ -76,27 +73,28 @@ namespace D3BitGUI
 			}
 
             D3Bit.Data.LoadAffixes(Properties.Settings.Default.ScanLanguage);
-
-            /*
-            var s = new StopWatch();
-            Bitmap bitmap = new Bitmap("x.jpg");
-            var res = Screenshot.GetToolTip(bitmap);
-            res.Save("z.png", ImageFormat.Png);
-            Tooltip tooltip = new D3Bit.Tooltip(res);
-            string name = tooltip.ParseItemName();
-            string quality = "";
-            string type = tooltip.ParseItemType(out quality);
-            double dps = tooltip.ParseDPS();
-            var affixes = tooltip.ParseAffixes();
-            tooltip.Processed.Save("s.png", ImageFormat.Png);
-            Debug(name);
-            Debug(quality);
-            Debug(type);
-            Debug(dps + "");
-            Debug(String.Join(", ", affixes.Select(kv => kv.Value + " " + kv.Key)));
-            s.Lap("Parsing");
-            /**/
         }
+
+		private static void CheckForUpdates()
+		{
+			try
+			{
+				string res = Util.GetPageSource("http://d3bit.com/data/json/info.json");
+				JObject o = JObject.Parse(res);
+				if (o["version"] != null)
+				{
+					if (o["version"].ToString() == version)
+						Log("Your version of D3Bit is up-to-date.");
+					else
+						Log("There's a new version of D3Bit, available at http://d3bit.com/");
+					if (o["msg"] != null && o["msg"].ToString().Length > 0)
+						Log("{0}", o["msg"]);
+					return;
+				}
+			}
+			catch { }
+			Log("Cannot fetch version info. Please check your connection.");
+		}
 
         public void OnKeyUp(object sender, KeyEventArgs e)
         {
@@ -126,6 +124,16 @@ namespace D3BitGUI
                 (new Thread(_overlay.Upload)).Start();
             }
             */
+			if (!Debugger.IsAttached) // do not process hot keys when not in game
+			{
+				int pid = Utils.WinAPI.GetForegroundProcessId();
+				var proc = Process.GetProcessById(pid);
+				if (proc.ProcessName != "Diablo III")
+				{
+					return;
+				}
+			}
+
             if (e.KeyCode == (Keys)Enum.Parse(typeof(Keys), Properties.Settings.Default.ScanKey))
             {
                 
@@ -158,13 +166,11 @@ namespace D3BitGUI
         {
             if (good)
             {
-                SoundPlayer simpleSound = new SoundPlayer("notify.wav");
-                simpleSound.Play();
+                sndGood.Play();
             }
             else
             {
-                SoundPlayer simpleSound = new SoundPlayer("ringout.wav");
-                simpleSound.Play();
+                sndError.Play();
             }
         }
 
@@ -184,7 +190,7 @@ namespace D3BitGUI
             if (t != null && t.ThreadState == System.Threading.ThreadState.Running)
 			{
                 t.Abort();
-        }
+			}
         }
 
         private void rtbDebug_LinkClicked(object sender, LinkClickedEventArgs e)
@@ -206,23 +212,25 @@ namespace D3BitGUI
             }
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            notifyIcon1.Visible = false;
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-        }
+		#region [ Systray icon handling ]
+		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			notifyIcon1.Visible = false;
+			this.Show();
+			this.WindowState = FormWindowState.Normal;
+		}
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            notifyIcon1.Visible = false;
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-        }
+		private void toolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			notifyIcon1.Visible = false;
+			this.Show();
+			this.WindowState = FormWindowState.Normal;
+		}
 
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+		private void toolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			Close();
+		} 
+		#endregion
     }
 }

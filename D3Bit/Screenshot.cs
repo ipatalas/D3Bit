@@ -175,71 +175,10 @@ namespace D3Bit
                 return bmp;
             }
             return null;
-        }
-
-        public static Bitmap GetToolTip(Bitmap bitmap)
-        {
-            var lines = ImageUtil.FindHorizontalLines(bitmap, 260, 650, new int[] { 0, 10, 0, 10, 0, 10 });
-            lines = lines.OrderBy(l => l.P1.X).ToList();
-
-            var groups =
-                lines.GroupBy(l => l.P1.X).Where(
-                    l =>
-                    l.Last().P1.Y - l.First().P1.Y > 200 &&
-                    l.Count() > 4 &&
-                    GetMaxVerticalDistance(l.ToList()) > 80 &&
-                    l.Count() == l.Where(i => Math.Abs(i.XLength - l.First().XLength) < i.XLength*0.1).Count()).OrderByDescending(
-                        l => l.First().XLength).ThenByDescending(l => l.Count());
-            int x = groups.Count();
-            if (groups.Count() > 0)
-            {
-                lines = groups.ElementAt(0).ToList();
-                //Count line clusters
-                int clusterCount = 0;
-                int lastY = lines.ElementAt(0).P1.Y;
-                foreach (var line in lines)
-                {
-                    if (line.P1.Y - lastY > 5)
-                        clusterCount++;
-                    lastY = line.P1.Y;
-                }
-
-                var min = new Point(bitmap.Width, bitmap.Height);
-                var max = new Point(0, 0);
-                foreach (var line in groups.ElementAt(0))
-                {
-                    if (line.P1.X <= min.X && line.P1.Y <= min.Y)
-                        min = line.P1;
-                    else if (line.P2.X >= max.X && line.P2.Y >= max.Y)
-                        max = line.P2;
-                }
-                Bound bound = new Bound(min, max);
-                if (clusterCount==2)
-                    bound = new Bound(new Point(min.X, min.Y - (int)Math.Round((42/410.0)*(max.X-min.X))), max);
-                return bitmap.Clone(bound.ToRectangle(), bitmap.PixelFormat);
-            }
-            return null;
-        }
-
-        //Helper function
-        static int GetMaxVerticalDistance(List<Line> lines)
-        {
-            if (lines.Count == 0)
-                return 0;
-            int maxDis = 0;
-            int lastY = lines[0].P1.Y;
-            foreach (var line in lines)
-            {
-                int diff = line.P1.Y - lastY;
-                if (diff > maxDis)
-                    maxDis = diff;
-                lastY = line.P1.Y;
-            }
-            return maxDis;
-        }
+        }      
 
 		#region [ New tooltip search method ]
-		public static Bitmap GetTooltip_LinesV2(Bitmap source, bool limitSearchArea = true)
+		public static Bitmap GetTooltip(Bitmap source, bool limitSearchArea = true)
 		{
 			Func<double, int> h = percent => (int)Math.Round(percent / 100.0 * source.Width);
 			Func<double, int> v = percent => (int)Math.Round(percent / 100.0 * source.Height);

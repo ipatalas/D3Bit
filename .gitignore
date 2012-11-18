@@ -76,3 +76,9 @@ packages/
 /Build/tesseract/*.png
 /Build/tesseract/*.txt
 /Build/*.zip
+/Release/AForge.xml
+/Release/AForge.Imaging.xml
+/Release/AForge.Math.xml
+/Build/AForge.xml
+/Build/AForge.Imaging.xml
+/Build/AForge.Math.xml

@@ -46,7 +46,7 @@ namespace D3BitGUI
                 try
                 {
                     Bitmap bitmap = Bitmap.FromFile(filename) as Bitmap;
-                    var res = Screenshot.GetToolTip(bitmap);
+                    var res = Screenshot.GetTooltip(bitmap);
                     Tooltip tooltip = new D3Bit.Tooltip(res);
                     string name = tooltip.ParseItemName();
                     string quality = "";
