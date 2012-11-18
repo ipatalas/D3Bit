@@ -208,29 +208,6 @@ namespace Tests
 			pictureBox1.Image = bmp;
 		}
 
-		private void HandleIdent()
-		{
-			tabControl1.SelectTab(tabTooltipSearch);
-
-			var bmp = GetDiabloScreenshot();
-			
-			var path = @"pics\ident.png";
-			var findImg = "*TRANSBLACK *45 " + path;
-
-			var result = ImageUtil.ImageSearch(0, 0, bmp.Width, bmp.Height, findImg + UpperCornerName);
-			if (result != "0")
-			{
-				var start = ImageSearchResultToRectangle(result);
-
-				using (var g = Graphics.FromImage(bmp))
-				{
-					g.DrawRectangle(Pens.Lime, start);
-				}
-			}
-
-			pictureBox1.Image = bmp;
-		}
-
 		public Bitmap GetTooltip_LinesV2(Bitmap source, Rectangle searchArea, Graphics g)
 		{			
 			Func<double, int> h = percent => (int)Math.Round(percent / 100.0 * source.Width);
@@ -421,60 +398,6 @@ namespace Tests
 			return count;
 		}
 
-		#region [ ImageSearch tests ]
-		public static Bitmap GetTooltip_ImageSearch(Bitmap source, Rectangle searchArea, Graphics g)
-		{
-			var searchAreaSize = searchArea.Width * searchArea.Height;
-			var projectedTooltipWidth = (int)(source.Height * 0.39); // 39% of screen resolution
-
-			var path = string.Format(@"pics\{0}x{1}\", source.Width, source.Height);
-			if (!Directory.Exists(path))
-			{
-				// fallback to legacy mechanism
-				throw new Exception(string.Format("Cannot find pics for {0}x{1}", source.Width, source.Height));
-			}
-
-			var findImg = "*TRANSBLACK *15 " + path;
-
-			var result = ImageUtil.ImageSearch(searchArea.Left, searchArea.Top, searchArea.Right, searchArea.Bottom, findImg + UpperCornerName);
-			if (result == "0")
-			{
-				Trace.TraceWarning("Upper-left corner not found...");
-				return null;
-			}
-
-			var start = ImageSearchResultToRectangle(result);
-
-			g.DrawRectangle(Pens.Lime, start);
-
-			searchArea = Rectangle.FromLTRB(start.Left + (int)(projectedTooltipWidth * 0.9), start.Top, start.Left + (int)(projectedTooltipWidth * 1.1), source.Height);
-			searchAreaSize += searchArea.Width * searchArea.Height;
-			g.DrawRectangle(Pens.Navy, searchArea);
-
-			Trace.WriteLine(string.Format("Searched {0:0%} of pixels", searchAreaSize * 1f / (source.Width * source.Height)));
-
-			result = ImageUtil.ImageSearch(searchArea.Left, searchArea.Top, searchArea.Right, searchArea.Bottom, findImg + BottomCornerName);
-			if (result == "0")
-			{
-				Trace.TraceWarning("Bottom-right corner not found...");
-				return null;
-			}
-
-			var end = ImageSearchResultToRectangle(result);
-			g.DrawRectangle(Pens.Lime, end);
-
-			var bounds = Rectangle.FromLTRB(start.Left, start.Top, end.Right, end.Bottom);
-
-			return source.Clone(bounds, source.PixelFormat);
-		}
-
-		static Rectangle ImageSearchResultToRectangle(string result)
-		{
-			var split = result.Split('|').ToList().ConvertAll(x => int.Parse(x));
-
-			return new Rectangle(split[1], split[2], split[3], split[4]);
-		}  
-		#endregion
 		#endregion
 
 		#region [ Items tests ]

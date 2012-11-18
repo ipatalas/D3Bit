@@ -57,10 +57,15 @@ namespace D3Bit
 #endif
 		}
 
+		private int GetGrayValue(Color color)
+		{
+			return Math.Max(color.R, Math.Max(color.G, color.B));
+		}
+
 		public string ParseItemName()
 		{
 			Func<Color, bool> func = c => c.GetBrightness() > 0.9;
-			Func<Color, bool> func2 = c => ImageUtil.GetGrayValue(c) > 180;
+			Func<Color, bool> func2 = c => GetGrayValue(c) > 180;
 
 			string itemName = "Unknown";
 
@@ -94,7 +99,7 @@ namespace D3Bit
 			string itemType = "Unknown";
 			quality = "Unknown";
 			
-			Func<Color, bool> colorFunc = c => ImageUtil.GetGrayValue(c) > 130 && !(Math.Abs(c.R - c.G) < 30 && Math.Abs(c.G - c.B) < 30);
+			Func<Color, bool> colorFunc = c => GetGrayValue(c) > 130 && !(Math.Abs(c.R - c.G) < 30 && Math.Abs(c.G - c.B) < 30);
 
 			var bound = Rectangle.FromLTRB(h(22), h(14), h(70), h(21));
 

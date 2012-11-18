@@ -13,9 +13,6 @@ namespace D3Bit
 {
     public static class Screenshot
     {
-		private const string UpperCornerName = "ucorner.png";
-		private const string BottomCornerName = "bcorner.png";
-
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
