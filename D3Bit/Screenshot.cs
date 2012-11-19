@@ -243,8 +243,8 @@ namespace D3Bit
 					var downRange = Enumerable.Range(y + 1, locked.Height - y - 1);
 
 					var rng = isLeft ? Enumerable.Range(x + 1, 5) : Enumerable.Range(x - 5, 5).Reverse();
-					var up = CountPixelsVertical(locked, borderFunc, upRange, x, rng);
-					var down = CountPixelsVertical(locked, borderFunc, downRange, x);
+					var up = ImageUtil.CountPixelsVertical(locked, borderFunc, upRange, x, rng);
+					var down = ImageUtil.CountPixelsVertical(locked, borderFunc, downRange, x);
 
 					return new Line(new Point(x, y - up), new Point(x, y + down));
 				}
@@ -279,8 +279,8 @@ namespace D3Bit
 						var leftRange = Enumerable.Range(searchArea.Left, x - searchArea.Left).Reverse(); // search until the searchArea.Left as it covers the upper-left corner
 						var rightRange = Enumerable.Range(x + 1, (int)(projectedTooltipWidth * 1.2));
 
-						int left = CountPixelsHorizontal(locked, blackFunc, leftRange, y); // count black pixels to the left from current pos
-						int right = CountPixelsHorizontal(locked, blackFunc, rightRange, y); // count black pixels to the right from current pos
+						int left = ImageUtil.CountPixelsHorizontal(locked, blackFunc, leftRange, y); // count black pixels to the left from current pos
+						int right = ImageUtil.CountPixelsHorizontal(locked, blackFunc, rightRange, y); // count black pixels to the right from current pos
 
 						var line_width = left + right + 1;
 						
@@ -333,63 +333,7 @@ namespace D3Bit
 			return null;
 		}
 
-		/// <summary>
-		/// Counts pixels of given color. Search in X coordinate given and Y range given.
-		/// </summary>
-		/// <param name="colorFunc">function that checks if the color should be counted or not</param>
-		/// <param name="additionalRange">X range to be checked as additional stop condition, used to find upper tooltip boundary</param>
-		/// <returns>number of pixels of given color found</returns> 
-		private static int CountPixelsVertical(LockBitmap locked, Func<Color, bool> colorFunc, IEnumerable<int> range, int x, IEnumerable<int> additionalRange = null)
-		{
-			int count = 0;
-
-			foreach (var y in range)
-			{
-				var pixel = locked.GetPixel(x, y);
-				if (colorFunc(pixel))
-				{
-					count++;
-
-					if (additionalRange != null && additionalRange.All(ax => colorFunc(locked.GetPixel(ax, y))))
-					{
-						break;
-					}
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			return count;
-		}
-
-		/// <summary>
-		/// Counts pixels of given color. Search in Y coordinate given and X range given
-		/// </summary>
-		/// <param name="colorFunc">function that checks if the color should be counted or not</param>
-		/// <returns>number of pixels of given color found</returns> 
-		private static int CountPixelsHorizontal(LockBitmap locked, Func<Color, bool> colorFunc, IEnumerable<int> xRange, int y)
-		{
-			int count = 0;
-
-			foreach (var x in xRange)
-			{
-				var pixel = locked.GetPixel(x, y);
-				if (colorFunc(pixel))
-				{
-					count++;
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			return count;
-		}
-
-		#endregion		
+        #endregion		
 
     }
 }

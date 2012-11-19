@@ -12,12 +12,13 @@ namespace D3Bit
 {
     public static class Tesseract
     {
-        private static Hunspell hunspell = new Hunspell("en_us.aff", "en_us.dic");
+        private static Lazy<Hunspell> hunspellEngine = new Lazy<Hunspell>(() => new Hunspell("en_us.aff", "en_us.dic"));
         public static string language_code = "eng";
 
         public static string GetTextFromBitmap(Bitmap bitmap)
         {
-            return GetTextFromBitmap(bitmap, @"nobatch tesseract\d3letters");
+			//return GetTextFromBitmap(bitmap, @"nobatch tesseract\d3letters");
+			return GetTextFromBitmap(bitmap, @"tesseract\d3letters");
         }
 
         public static string GetTextFromBitmap(Bitmap bitmap, string extraParams)
@@ -39,8 +40,10 @@ namespace D3Bit
 
         public static string CorrectSpelling(string text)
         {
+            Hunspell hunspell = hunspellEngine.Value;
             string[] words = text.Split(new[] { ' ' });
             string res = "";
+
             foreach (var word in words)
             {
                 var suggestions = hunspell.Suggest(word);
@@ -49,6 +52,7 @@ namespace D3Bit
                 else
                     res += word + " ";
             }
+
             return res.Trim();
         }
 

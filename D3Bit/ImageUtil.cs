@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
@@ -251,9 +252,9 @@ namespace D3Bit
 			using (Graphics graphics = Graphics.FromImage(result))
 			{
 				//set the resize quality modes to high quality
-				graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-				graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-				graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.High;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
 				//draw the image into the target bitmap
 				graphics.DrawImage(image, 0, 0, result.Width, result.Height);
 			}
@@ -289,7 +290,7 @@ namespace D3Bit
 			byte[] rgbValues = new byte[bytes];
 
 			// Copy the RGB values into the array.
-			System.Runtime.InteropServices.Marshal.Copy(pbits.Scan0, rgbValues, 0, bytes);
+			Marshal.Copy(pbits.Scan0, rgbValues, 0, bytes);
 
 			int rgb;
 			// Fill the color array with the new sharpened color values.
@@ -335,13 +336,75 @@ namespace D3Bit
 			}
 
 			// Copy the RGB values back to the bitmap.
-			System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, pbits.Scan0, bytes);
+			Marshal.Copy(rgbValues, 0, pbits.Scan0, bytes);
 			// Release image bits.
 			sharpenImage.UnlockBits(pbits);
 
 			return sharpenImage;
 		}
 		#endregion
+
+	    /// <summary>
+	    /// Counts pixels of given color. Search in X coordinate given and Y range given.
+	    /// </summary>
+        /// <param name="locked">bitmap to search in</param>
+        /// <param name="colorFunc">function that checks if the color should be counted or not</param>
+        /// <param name="range">vertical range in which to search for pixels</param>
+        /// <param name="x">X coordinate</param>
+	    /// <param name="additionalRange">X range to be checked as additional stop condition, used to find upper tooltip boundary</param>
+	    /// <returns>number of pixels of given color found</returns> 
+	    public static int CountPixelsVertical(LockBitmap locked, Func<Color, bool> colorFunc, IEnumerable<int> range, int x, IEnumerable<int> additionalRange = null)
+	    {
+	        int count = 0;
+
+	        foreach (var y in range)
+	        {
+	            var pixel = locked.GetPixel(x, y);
+	            if (colorFunc(pixel))
+	            {
+	                count++;
+
+	                if (additionalRange != null && additionalRange.All(ax => colorFunc(locked.GetPixel(ax, y))))
+	                {
+	                    break;
+	                }
+	            }
+	            else
+	            {
+	                break;
+	            }
+	        }
+
+	        return count;
+	    }
+
+	    /// <summary>
+	    /// Counts pixels of given color. Search in Y coordinate given and X range given
+	    /// </summary>
+	    /// <param name="locked">bitmap to search in</param>
+	    /// <param name="colorFunc">function that checks if the color should be counted or not</param>
+	    /// <param name="xRange">horizontal range in which to search for pixels</param>
+	    /// <param name="y">Y coordinate</param>
+	    /// <returns>number of pixels of given color found</returns> 
+	    public static int CountPixelsHorizontal(LockBitmap locked, Func<Color, bool> colorFunc, IEnumerable<int> xRange, int y)
+	    {
+	        int count = 0;
+
+	        foreach (var x in xRange)
+	        {
+	            var pixel = locked.GetPixel(x, y);
+	            if (colorFunc(pixel))
+	            {
+	                count++;
+	            }
+	            else
+	            {
+	                break;
+	            }
+	        }
+
+	        return count;
+	    }
 	}
 
 	public class Line
