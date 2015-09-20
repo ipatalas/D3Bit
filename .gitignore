@@ -82,3 +82,6 @@ packages/
 /Build/AForge.xml
 /Build/AForge.Imaging.xml
 /Build/AForge.Math.xml
+/Build/*.dll
+/Build/*.exe
+/Packages.dgml
